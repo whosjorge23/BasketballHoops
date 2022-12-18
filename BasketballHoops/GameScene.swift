@@ -13,12 +13,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var ball : SKSpriteNode?
     private var button : SKSpriteNode?
     private var hoop : SKSpriteNode?
+    private var startingPosition : SKSpriteNode?
     private var scoreLabel : SKLabelNode?
     
     let ballCategory : UInt32 = 0x1 << 1
     let hoopCategory : UInt32 = 0x1 << 2
+    let startingPositionCategory : UInt32 = 0x1 << 4
     
     var score = 0
+    var touchEnable = true
     
     override func didMove(to view: SKView) {
         
@@ -32,23 +35,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hoop?.physicsBody?.categoryBitMask = hoopCategory
         hoop?.physicsBody?.contactTestBitMask = ballCategory
         
+        startingPosition = childNode(withName: "startingPosition") as? SKSpriteNode
+        startingPosition?.physicsBody?.categoryBitMask = startingPositionCategory
+        startingPosition?.physicsBody?.contactTestBitMask = ballCategory
+        
         scoreLabel = childNode(withName: "scoreLabel") as? SKLabelNode
        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        ball?.physicsBody?.applyForce(CGVector(dx: 0, dy: 50_000))
+        if touchEnable {
+            ball?.physicsBody?.applyForce(CGVector(dx: 0, dy: 50_000))
+            touchEnable = false
+        }
+        
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        score += 2
-        scoreLabel?.text = "Score: \(score)"
+                
         
-        if contact.bodyA.categoryBitMask == ballCategory {
-            print("touch A")
+        if contact.bodyA.categoryBitMask == hoopCategory {
+            print("Point Shot A")
+            score += 2
+            scoreLabel?.text = "Score: \(score)"
+
         }
-        if contact.bodyB.categoryBitMask == ballCategory {
-            print("touch B")
+        if contact.bodyB.categoryBitMask == hoopCategory {
+            print("Point Shot B")
+            score += 2
+            scoreLabel?.text = "Score: \(score)"
+
+        }
+        
+        if contact.bodyA.categoryBitMask == startingPositionCategory {
+            print("Re-enable touch A")
+            touchEnable = true
+        }
+        if contact.bodyB.categoryBitMask == startingPositionCategory {
+            print("Re-enable touch B")
+            touchEnable = true
         }
         
     }
