@@ -22,6 +22,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var score = 0
     var touchEnable = true
+    var seconds = 60
     
     override func didMove(to view: SKView) {
         
@@ -40,6 +41,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startingPosition?.physicsBody?.contactTestBitMask = ballCategory
         
         scoreLabel = childNode(withName: "scoreLabel") as? SKLabelNode
+        
+        if seconds >= 0{
+            var timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                self.seconds -= 1
+                print("\(self.seconds)")
+                if self.seconds <= 0 {
+                    self.score = 0
+                    timer.invalidate()
+                }
+            }
+        }
        
     }
     
