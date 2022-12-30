@@ -15,13 +15,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var hoop : SKSpriteNode?
     private var startingPosition : SKSpriteNode?
     private var scoreLabel : SKLabelNode?
+    private var timerLabel : SKLabelNode?
     
     let ballCategory : UInt32 = 0x1 << 1
     let hoopCategory : UInt32 = 0x1 << 2
     let startingPositionCategory : UInt32 = 0x1 << 4
     
     var score = 0
-    var touchEnable = true
+    var touchEnable = false
     var seconds = 60
     
     override func didMove(to view: SKView) {
@@ -41,13 +42,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startingPosition?.physicsBody?.contactTestBitMask = ballCategory
         
         scoreLabel = childNode(withName: "scoreLabel") as? SKLabelNode
+        timerLabel = childNode(withName: "timerLabel") as? SKLabelNode
         
-        if seconds >= 0{
+        if seconds >= 0 {
             var timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.seconds -= 1
+                self.timerLabel?.text = "Time: \(self.seconds)"
                 print("\(self.seconds)")
                 if self.seconds <= 0 {
                     self.score = 0
+                    self.scoreLabel?.text = "Score: \(self.score)"
                     timer.invalidate()
                 }
             }
