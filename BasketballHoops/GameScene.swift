@@ -23,7 +23,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var yourScoreLabel : SKLabelNode?
     var numberBestScoreLabel : SKLabelNode?
     
-    let mainMenuButton = SKSpriteNode(imageNamed: "mainMenuButton")
+    let playAgainButton = SKSpriteNode(imageNamed: "playAgainButton")
+    
+    let resetButton = SKSpriteNode(imageNamed: "resetButton")
     
     let ballCategory : UInt32 = 0x1 << 1
     let hoopCategory : UInt32 = 0x1 << 2
@@ -73,7 +75,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         numberBestScoreLabel = SKLabelNode(fontNamed: "Arial")
         numberBestScoreLabel?.text = "\(UserDefaults.standard.integer(forKey: kBestScore))"
-        numberBestScoreLabel?.position = CGPoint(x: 88, y: 340)
+        numberBestScoreLabel?.position = CGPoint(x: 83, y: 340)
         numberBestScoreLabel?.fontSize = 50
         numberBestScoreLabel?.fontColor = #colorLiteral(red: 0.4818688035, green: 1, blue: 0.2141556144, alpha: 1)
         numberBestScoreLabel?.zPosition = -1
@@ -125,6 +127,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for node in theNodes {
             if node.name == "mainMenu" {
                 node.removeFromParent()
+                resetButton.removeFromParent()
+                scene?.isPaused = false
+                initGame()
+           }
+            
+            if node.name == "resetButton" {
+                node.removeFromParent()
+                playAgainButton.removeFromParent()
+                UserDefaults.standard.set(0, forKey: kBestScore)
                 scene?.isPaused = false
                 initGame()
            }
@@ -186,10 +197,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
             score = 0
         
-            mainMenuButton.position = CGPoint(x: 0, y: -100)
-            mainMenuButton.name = "mainMenu"
-            mainMenuButton.zPosition = 30
-            addChild(mainMenuButton)
+            playAgainButton.position = CGPoint(x: 0, y: -100)
+            playAgainButton.name = "mainMenu"
+            playAgainButton.zPosition = 30
+            addChild(playAgainButton)
+        
+            resetButton.position = CGPoint(x: 0, y: -180)
+            resetButton.name = "resetButton"
+            resetButton.zPosition = 30
+            addChild(resetButton)
             }
     
     func initGame() {
