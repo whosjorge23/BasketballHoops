@@ -129,6 +129,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 node.removeFromParent()
                 resetButton.removeFromParent()
                 scene?.isPaused = false
+                score = 0
+                scoreLabelNumber?.text = "\(score)"
                 initGame()
            }
             
@@ -137,6 +139,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 playAgainButton.removeFromParent()
                 UserDefaults.standard.set(0, forKey: kBestScore)
                 scene?.isPaused = false
+                score = 0
+                scoreLabelNumber?.text = "\(score)"
+                bestScore = 0
+                bestScoreLabel?.text = "\(score)"
+                UserDefaults.standard.set(0, forKey: kBestScore)
                 initGame()
            }
         }
@@ -179,7 +186,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scene?.isPaused = true
             gameTimer?.invalidate()
             seconds = 60
-            score = 0
         
             ball?.position = CGPoint(x: 0, y: 110)
             touchEnable = false
