@@ -25,10 +25,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var yourScoreLabel : SKLabelNode?
     var numberBestScoreLabel : SKLabelNode?
     
-    let playAgainButton = SKSpriteNode(imageNamed: "playAgainButton")
-    
-    let resetButton = SKSpriteNode(imageNamed: "resetButton")
-    
     let ballCategory : UInt32 = 0x1 << 1
     let hoopCategory : UInt32 = 0x1 << 2
     let startingPositionCategory : UInt32 = 0x1 << 4
@@ -155,13 +151,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 startGame()
             }
 
-            if node.name == "mainMenu" {
+            if node.name == "playAgainButton" {
                 startGame()
            }
             
             if node.name == "resetButton" {
-                node.removeFromParent()
-                playAgainButton.removeFromParent()
+                menuOverlay?.removeFromParent()
                 UserDefaults.standard.set(0, forKey: kBestScore)
                 score = 0
                 combo = 0
@@ -223,16 +218,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 UserDefaults.standard.set(score, forKey: kBestScore)
             }
             numberBestScoreLabel?.text = "\(UserDefaults.standard.integer(forKey: kBestScore))"
-
-            playAgainButton.position = CGPoint(x: 0, y: -100)
-            playAgainButton.name = "mainMenu"
-            playAgainButton.zPosition = 30
-            addChild(playAgainButton)
-        
-            resetButton.position = CGPoint(x: 0, y: -180)
-            resetButton.name = "resetButton"
-            resetButton.zPosition = 30
-            addChild(resetButton)
+            showGameOverMenu()
     }
     
     func initGame() {
@@ -276,8 +262,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func startGame() {
         menuOverlay?.removeFromParent()
-        playAgainButton.removeFromParent()
-        resetButton.removeFromParent()
         score = 0
         combo = 0
         seconds = 60
@@ -365,6 +349,85 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         buttonLabel.position = CGPoint(x: 0, y: -110)
         buttonLabel.zPosition = 52
         overlay.addChild(buttonLabel)
+
+        menuOverlay = overlay
+        addChild(overlay)
+    }
+
+    func showGameOverMenu() {
+        menuOverlay?.removeFromParent()
+
+        let overlay = SKNode()
+        overlay.zPosition = 50
+
+        let panel = SKShapeNode(rectOf: CGSize(width: 310, height: 360), cornerRadius: 32)
+        panel.fillColor = UIColor(red: 0.07, green: 0.09, blue: 0.18, alpha: 0.88)
+        panel.strokeColor = UIColor.orange
+        panel.lineWidth = 4
+        panel.position = CGPoint(x: 0, y: -10)
+        overlay.addChild(panel)
+
+        let title = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        title.text = "Time's Up"
+        title.fontSize = 32
+        title.fontColor = .white
+        title.position = CGPoint(x: 0, y: 108)
+        title.zPosition = 51
+        overlay.addChild(title)
+
+        let scoreSummary = SKLabelNode(fontNamed: "AvenirNext-Medium")
+        scoreSummary.text = "Your Score: \(score)"
+        scoreSummary.fontSize = 24
+        scoreSummary.fontColor = UIColor.orange
+        scoreSummary.position = CGPoint(x: 0, y: 60)
+        scoreSummary.zPosition = 51
+        overlay.addChild(scoreSummary)
+
+        let best = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        best.text = "Best Score: \(UserDefaults.standard.integer(forKey: kBestScore))"
+        best.fontSize = 20
+        best.fontColor = .yellow
+        best.position = CGPoint(x: 0, y: 20)
+        best.zPosition = 51
+        overlay.addChild(best)
+
+        let playAgainButton = SKShapeNode(rectOf: CGSize(width: 200, height: 64), cornerRadius: 22)
+        playAgainButton.name = "playAgainButton"
+        playAgainButton.fillColor = UIColor.systemOrange
+        playAgainButton.strokeColor = .white
+        playAgainButton.lineWidth = 3
+        playAgainButton.position = CGPoint(x: 0, y: -64)
+        playAgainButton.zPosition = 51
+        overlay.addChild(playAgainButton)
+
+        let playAgainLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        playAgainLabel.text = "Play Again"
+        playAgainLabel.name = "playAgainButton"
+        playAgainLabel.fontSize = 24
+        playAgainLabel.fontColor = .white
+        playAgainLabel.verticalAlignmentMode = .center
+        playAgainLabel.position = CGPoint(x: 0, y: -64)
+        playAgainLabel.zPosition = 52
+        overlay.addChild(playAgainLabel)
+
+        let resetButton = SKShapeNode(rectOf: CGSize(width: 200, height: 64), cornerRadius: 22)
+        resetButton.name = "resetButton"
+        resetButton.fillColor = UIColor(red: 0.2, green: 0.24, blue: 0.35, alpha: 1)
+        resetButton.strokeColor = .white
+        resetButton.lineWidth = 3
+        resetButton.position = CGPoint(x: 0, y: -142)
+        resetButton.zPosition = 51
+        overlay.addChild(resetButton)
+
+        let resetLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        resetLabel.text = "Reset Best"
+        resetLabel.name = "resetButton"
+        resetLabel.fontSize = 24
+        resetLabel.fontColor = .white
+        resetLabel.verticalAlignmentMode = .center
+        resetLabel.position = CGPoint(x: 0, y: -142)
+        resetLabel.zPosition = 52
+        overlay.addChild(resetLabel)
 
         menuOverlay = overlay
         addChild(overlay)
